@@ -1,0 +1,79 @@
+#autoload
+emulate -L zsh
+setopt extended_glob
+
+print -P "%Bzsh doctor%b"
+print -- "-----------"
+print -- "Zsh version:       $ZSH_VERSION"
+print -- "Terminal:          ${TERM_PROGRAM:-unknown}"
+printf "Startup time:      %.2f ms\n" "${ZSH_STARTUP_MS:-0}"
+print -- "Config root:       ${ZSH_CONFIG_HOME:-unknown}"
+print -- "Compiled cache:    ${ZSH_COMPILED_HOME:-unknown}"
+print
+
+print -P "%BModule load order%b"
+local index=1 module
+for module in "${ZSH_LOADED_MODULES[@]}"; do
+  printf "%2d. %s\n" "$index" "$module"
+  (( index++ ))
+done
+print
+
+print -P "%BCompiled this startup%b"
+if (( ${#ZSH_COMPILED_MODULES[@]} )); then
+  printf "  %s\n" "${ZSH_COMPILED_MODULES[@]}"
+else
+  print -- "  none"
+fi
+print
+
+print -P "%BPATH additions%b"
+typeset -A before_seen
+local item
+for item in "${ZSH_PATH_BEFORE[@]}"; do
+  before_seen[$item]=1
+done
+
+local additions=0
+for item in "${path[@]}"; do
+  if [[ -z ${before_seen[$item]:-} ]]; then
+    print -- "  + $item"
+    (( additions++ ))
+  fi
+done
+(( additions )) || print -- "  none"
+print
+
+print -P "%BPATH duplicates%b"
+typeset -A counts
+for item in "${(@s/:/)PATH}"; do
+  (( counts[$item]++ ))
+done
+
+local duplicates=0
+for item in ${(k)counts}; do
+  if (( counts[$item] > 1 )); then
+    printf "  %dx %s\n" "${counts[$item]}" "$item"
+    (( duplicates++ ))
+  fi
+done
+(( duplicates )) || print -- "  none"
+print
+
+print -P "%BMissing PATH directories%b"
+local missing=0
+for item in "${path[@]}"; do
+  if [[ ! -d $item ]]; then
+    print -- "  ! $item"
+    (( missing++ ))
+  fi
+done
+(( missing )) || print -- "  none"
+print
+
+print -P "%BFailed compilations%b"
+if (( ${#ZSH_FAILED_MODULES[@]} )); then
+  printf "  %s\n" "${ZSH_FAILED_MODULES[@]}"
+else
+  print -- "  none"
+fi

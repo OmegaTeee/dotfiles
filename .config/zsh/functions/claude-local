@@ -1,0 +1,3 @@
+#autoload
+emulate -L zsh
+with_secrets ai claude "$@"

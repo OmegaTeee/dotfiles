@@ -1,0 +1,2 @@
+#autoload
+ZSH_PROFILE=1 exec zsh

@@ -1,0 +1,3 @@
+#autoload
+emulate -L zsh
+command headroom doctor --port "${HEADROOM_PORT:-8787}" "$@"

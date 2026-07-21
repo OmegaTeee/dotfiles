@@ -1,0 +1,12 @@
+#autoload
+emulate -L zsh
+
+local compdump="${ZSH_COMPDUMP:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}}"
+
+rm -f -- "$compdump" "${compdump}.zwc"
+
+autoload -Uz compinit
+compinit -d "$compdump"
+zcompile "$compdump" 2>/dev/null || true
+
+print -- "Completion cache rebuilt: $compdump"

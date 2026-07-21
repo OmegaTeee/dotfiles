@@ -1,0 +1,8 @@
+#autoload
+emulate -L zsh
+
+(
+  cd "${PROMPTHUB_HOME:-$HOME/prompthub}/app" || return
+  source .venv/bin/activate
+  command python scripts/manage-keys.py "$@"
+)

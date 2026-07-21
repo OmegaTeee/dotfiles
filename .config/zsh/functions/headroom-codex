@@ -1,0 +1,7 @@
+#autoload
+emulate -L zsh
+
+launchctl kickstart -k \
+  "gui/$(id -u)/com.prompthub.headroom" >/dev/null 2>&1 || true
+
+with_secrets ai codex "$@"

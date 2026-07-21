@@ -1,0 +1,11 @@
+#autoload
+emulate -L zsh
+
+local cache="${ZSH_COMPILED_HOME:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh/compiled}"
+
+rm -rf -- "$cache"
+mkdir -p "$cache"
+
+print -- "Removed compiled module cache: $cache"
+print -- "Restarting Zsh to rebuild modules..."
+exec zsh

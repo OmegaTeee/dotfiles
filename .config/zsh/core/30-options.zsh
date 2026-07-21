@@ -1,0 +1,16 @@
+# Interactive behavior.
+
+setopt AUTO_CD
+setopt AUTO_PUSHD
+setopt PUSHD_IGNORE_DUPS
+setopt PUSHD_SILENT
+
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+
+HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000

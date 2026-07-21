@@ -1,0 +1,8 @@
+#autoload
+emulate -L zsh
+
+secrets_load_ai || return
+
+ANTHROPIC_BASE_URL="${HEADROOM_PROXY_URL}/v1" \
+OPENAI_BASE_URL="${HEADROOM_PROXY_URL}/v1" \
+  command headroom wrap claude "$@"
