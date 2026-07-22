@@ -11,6 +11,7 @@ setopt extended_glob
 typeset -ga ZSH_LOADED_MODULES=()
 typeset -ga ZSH_COMPILED_MODULES=()
 typeset -ga ZSH_FAILED_MODULES=()
+typeset -gA ZSH_PLUGIN_STATUS=()
 
 typeset -g ZSH_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 

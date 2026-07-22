@@ -1,11 +1,12 @@
 #autoload
 emulate -L zsh
 
-local cache="${ZSH_COMPILED_HOME:-${XDG_CACHE_HOME:-$HOME/.cache}/zsh/compiled}"
+local config_home="${ZSH_CONFIG_HOME:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}"
+local -a compiled_files
 
-rm -rf -- "$cache"
-mkdir -p "$cache"
+compiled_files=("$config_home"/**/*.zwc(N.))
+(( ${#compiled_files[@]} )) && rm -f -- "${compiled_files[@]}"
 
-print -- "Removed compiled module cache: $cache"
-print -- "Restarting Zsh to rebuild modules..."
+print -- "Removed ${#compiled_files[@]} adjacent compiled Zsh module(s)."
+print -- "Restarting Zsh to rebuild discovered modules..."
 exec zsh

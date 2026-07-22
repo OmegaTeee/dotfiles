@@ -8,7 +8,7 @@ print -- "Zsh version:       $ZSH_VERSION"
 print -- "Terminal:          ${TERM_PROGRAM:-unknown}"
 printf "Startup time:      %.2f ms\n" "${ZSH_STARTUP_MS:-0}"
 print -- "Config root:       ${ZSH_CONFIG_HOME:-unknown}"
-print -- "Compiled cache:    ${ZSH_COMPILED_HOME:-unknown}"
+print -- "Compiled modules:  adjacent .zwc files"
 print
 
 print -P "%BModule load order%b"
@@ -24,6 +24,51 @@ if (( ${#ZSH_COMPILED_MODULES[@]} )); then
   printf "  %s\n" "${ZSH_COMPILED_MODULES[@]}"
 else
   print -- "  none"
+fi
+print
+
+print -P "%BCompilation health%b"
+local -a missing_compiled stale_compiled invalid_compiled
+local source_file compiled_file
+local healthy_compiled=0
+for module in "${ZSH_LOADED_MODULES[@]}"; do
+  source_file="${ZSH_CONFIG_HOME}/${module}"
+  compiled_file="${source_file}.zwc"
+
+  if [[ ! -s $compiled_file ]]; then
+    missing_compiled+=("$module")
+  elif [[ $source_file -nt $compiled_file ]]; then
+    stale_compiled+=("$module")
+  elif ! zcompile -t "$compiled_file" >/dev/null 2>&1; then
+    invalid_compiled+=("$module")
+  else
+    (( healthy_compiled++ ))
+  fi
+done
+
+print -- "  healthy: $healthy_compiled"
+if (( ${#missing_compiled[@]} )); then
+  printf "  missing: %s\n" "${missing_compiled[@]}"
+fi
+if (( ${#stale_compiled[@]} )); then
+  printf "  stale:   %s\n" "${stale_compiled[@]}"
+fi
+if (( ${#invalid_compiled[@]} )); then
+  printf "  invalid: %s\n" "${invalid_compiled[@]}"
+fi
+if (( ! ${#missing_compiled[@]} && ! ${#stale_compiled[@]} && ! ${#invalid_compiled[@]} )); then
+  print -- "  all loaded modules have current, valid bytecode"
+fi
+print
+
+print -P "%BPlugin status%b"
+local plugin
+if (( ${#ZSH_PLUGIN_STATUS[@]} )); then
+  for plugin in ${(ok)ZSH_PLUGIN_STATUS}; do
+    print -- "  $plugin: ${ZSH_PLUGIN_STATUS[$plugin]}"
+  done
+else
+  print -- "  none configured"
 fi
 print
 
@@ -60,15 +105,29 @@ done
 (( duplicates )) || print -- "  none"
 print
 
-print -P "%BMissing PATH directories%b"
-local missing=0
+print -P "%BMissing configured PATH directories%b"
+local missing=0 inherited_missing=0
 for item in "${path[@]}"; do
-  if [[ ! -d $item ]]; then
+  if [[ ! -d $item && -z ${before_seen[$item]:-} ]]; then
     print -- "  ! $item"
     (( missing++ ))
   fi
 done
 (( missing )) || print -- "  none"
+print
+
+print -P "%BMissing inherited PATH directories%b"
+for item in "${path[@]}"; do
+  if [[ ! -d $item && -n ${before_seen[$item]:-} ]]; then
+    print -- "  ~ $item"
+    (( inherited_missing++ ))
+  fi
+done
+if (( inherited_missing )); then
+  print -- "  (inherited before this framework loaded)"
+else
+  print -- "  none"
+fi
 print
 
 print -P "%BFailed compilations%b"
@@ -77,3 +136,22 @@ if (( ${#ZSH_FAILED_MODULES[@]} )); then
 else
   print -- "  none"
 fi
+print
+
+local doctor_status=0
+if (( missing || ${#missing_compiled[@]} || ${#stale_compiled[@]} ||
+      ${#invalid_compiled[@]} || ${#ZSH_FAILED_MODULES[@]} )); then
+  doctor_status=1
+fi
+for plugin in ${(v)ZSH_PLUGIN_STATUS}; do
+  [[ $plugin == active ]] || doctor_status=1
+done
+
+print -P "%BOverall status%b"
+if (( doctor_status )); then
+  print -- "  attention required"
+else
+  print -- "  healthy"
+fi
+
+return $doctor_status

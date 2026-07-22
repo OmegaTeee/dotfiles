@@ -94,10 +94,11 @@ It will be discovered automatically on the next shell start.
 Every discovered module is compiled into:
 
 ```text
-~/.cache/zsh/compiled/
+the adjacent module.zsh.zwc file
 ```
 
-A module is recompiled only when its source is newer than its cached `.zwc`.
+A module is recompiled only when its source is newer than its adjacent `.zwc`.
+This follows Zsh's native compiled-file lookup behavior.
 Autoloaded functions are not parsed until first invocation.
 
 Force a rebuild:
