@@ -3,13 +3,6 @@
 typeset -gU path PATH
 typeset -gU fpath FPATH
 
-if [[ -x /opt/homebrew/bin/brew ]]; then
-  export HOMEBREW_PREFIX="/opt/homebrew"
-  export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
-  export HOMEBREW_REPOSITORY="/opt/homebrew"
-  path=(/opt/homebrew/bin /opt/homebrew/sbin $path)
-fi
-
 typeset -a candidate_paths=(
   "$HOME/.local/bin"
   "$HOME/.lmstudio/bin"
@@ -31,3 +24,13 @@ for directory in $candidate_paths; do
 done
 
 unset candidate_paths directory
+
+# Homebrew owns the Node runtime. Add it after user tool directories have been
+# collected so it remains first in the final PATH and cannot be shadowed by a
+# second Node installation in ~/.local/bin.
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  export HOMEBREW_PREFIX="/opt/homebrew"
+  export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
+  export HOMEBREW_REPOSITORY="/opt/homebrew"
+  path=(/opt/homebrew/bin /opt/homebrew/sbin $path)
+fi
