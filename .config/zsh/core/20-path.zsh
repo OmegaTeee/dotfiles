@@ -25,9 +25,9 @@ done
 
 unset candidate_paths directory
 
-# Homebrew owns the Node runtime. Add it after user tool directories have been
-# collected so it remains first in the final PATH and cannot be shadowed by a
-# second Node installation in ~/.local/bin.
+# Homebrew provides mise, while mise owns the active Node runtime. Add
+# Homebrew after user tool directories so its system tools remain first; the
+# later mise activation selects the configured Node installation explicitly.
 if [[ -x /opt/homebrew/bin/brew ]]; then
   export HOMEBREW_PREFIX="/opt/homebrew"
   export HOMEBREW_CELLAR="/opt/homebrew/Cellar"

@@ -1,0 +1,138 @@
+#autoload
+# Report Node, npm, pnpm, mise, and project-pin resolution without changing state.
+
+emulate -L zsh
+setopt local_options pipe_fail
+
+print -P "%Bnode doctor%b"
+print -- "------------"
+print -- "Working directory: $PWD"
+print
+
+local doctor_status=0
+local node_path npm_path pnpm_path mise_path mise_node mise_data
+local npm_prefix pnpm_bin pnpm_root package_manager
+local -a node_candidates
+
+node_path="$(command -v node 2>/dev/null || true)"
+npm_path="$(command -v npm 2>/dev/null || true)"
+pnpm_path="$(command -v pnpm 2>/dev/null || true)"
+mise_path="$(command -v mise 2>/dev/null || true)"
+
+print -P "%BRuntime commands%b"
+if [[ -n $mise_path ]]; then
+  print -- "mise: $mise_path"
+  print -- "  version: $(mise --version 2>/dev/null | head -1)"
+else
+  print -- "mise: missing"
+  doctor_status=1
+fi
+
+if [[ -n $node_path ]]; then
+  print -- "node: $node_path"
+  print -- "  version: $(node --version 2>/dev/null)"
+else
+  print -- "node: missing"
+  doctor_status=1
+fi
+
+if [[ -n $npm_path ]]; then
+  print -- "npm: $npm_path"
+  print -- "  version: $(npm --version 2>/dev/null)"
+else
+  print -- "npm: missing"
+  doctor_status=1
+fi
+
+if [[ -n $pnpm_path ]]; then
+  print -- "pnpm: $pnpm_path"
+  print -- "  version: $(pnpm --version 2>/dev/null)"
+else
+  print -- "pnpm: missing"
+  doctor_status=1
+fi
+print
+
+print -P "%Bmise selection%b"
+if [[ -n $mise_path ]]; then
+  mise_node="$(mise current node 2>/dev/null || true)"
+  [[ -n $mise_node ]] && print -- "current node: $mise_node" || print -- "current node: none reported"
+  print -- "config files:"
+  if [[ -f "$HOME/.config/mise/config.toml" ]]; then
+    print -- "  $HOME/.config/mise/config.toml"
+  else
+    print -- "  none found"
+  fi
+fi
+print
+
+print -P "%BPackage-manager locations%b"
+if [[ -n $npm_path ]]; then
+  npm_prefix="$(npm config get prefix 2>/dev/null || true)"
+  print -- "npm prefix: ${npm_prefix:-unavailable}"
+fi
+print -- "PNPM_HOME: ${PNPM_HOME:-unset}"
+if [[ -n $pnpm_path ]]; then
+  pnpm_bin="$(cd "$HOME" && pnpm bin --global 2>/dev/null || true)"
+  pnpm_root="$(cd "$HOME" && pnpm root --global 2>/dev/null || true)"
+  print -- "pnpm global bin: ${pnpm_bin:-unavailable}"
+  print -- "pnpm global root: ${pnpm_root:-unavailable}"
+fi
+print
+
+print -P "%BResolution checks%b"
+mise_data="${MISE_DATA_DIR:-$HOME/.local/share/mise}"
+if [[ $node_path == "$mise_data/shims/"* ||
+      $node_path == "$mise_data/installs/node/"* ]]; then
+  print -- "node is resolved through mise"
+else
+  print -- "warning: node is not resolved through mise"
+  doctor_status=1
+fi
+
+if [[ -n $PNPM_HOME && $pnpm_path == "$PNPM_HOME/bin/"* ]]; then
+  print -- "pnpm is resolved from PNPM_HOME"
+else
+  print -- "warning: pnpm is not resolved from PNPM_HOME"
+  doctor_status=1
+fi
+
+node_candidates=("${(@f)$(whence -a node 2>/dev/null)}")
+if (( ${#node_candidates[@]} > 1 )); then
+  print -- "node candidates:"
+  printf "  %s\n" "${node_candidates[@]}"
+else
+  print -- "node candidates: one"
+fi
+print
+
+print -P "%BProject runtime pins%b"
+local directory parent candidate found_pin=0
+directory=$PWD
+while :; do
+  for candidate in mise.toml .mise.toml .tool-versions .node-version .nvmrc; do
+    if [[ -f "$directory/$candidate" ]]; then
+      print -- "  $directory/$candidate"
+      found_pin=1
+    fi
+  done
+  if [[ -f "$directory/package.json" ]]; then
+    package_manager="$(cd "$directory" && node -p 'require("./package.json").packageManager || ""' 2>/dev/null || true)"
+    [[ -n $package_manager ]] && print -- "  $directory/package.json packageManager: $package_manager"
+  fi
+  [[ $directory == / ]] && break
+  parent=${directory:h}
+  [[ $parent == $directory ]] && break
+  directory=$parent
+done
+(( found_pin )) || print -- "  none found from $PWD upward"
+print
+
+print -P "%BOverall status%b"
+if (( doctor_status )); then
+  print -- "  attention required"
+else
+  print -- "  healthy"
+fi
+
+return $doctor_status

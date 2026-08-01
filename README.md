@@ -8,7 +8,9 @@ A small plain-Zsh configuration with:
 - `plugins.d/`
 - application-specific configuration files
 - lazy secret and command wrappers
+- mise-based Node runtime activation
 - `zsh-doctor`
+- `node-doctor`
 
 It does not require Oh My Zsh or another plugin manager.
 
@@ -43,6 +45,7 @@ exec zsh
 
 ```zsh
 zsh-doctor
+node-doctor
 zsh-recompile
 zsh-rebuild-completions
 restart-zsh
@@ -123,5 +126,8 @@ zsh-doctor
 
 - `.p10k.zsh` remains separate and is not compiled.
 - Secrets remain lazy.
+- Homebrew provides `mise`; `mise` owns the active Node runtime.
+- pnpm owns global Node CLI packages through `PNPM_HOME`; npm remains the
+  compatibility and publishing interface.
 - VS Code shell integration is not manually spawned by default.
 - `typeset -U` keeps PATH and FPATH unique.
