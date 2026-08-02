@@ -16,6 +16,7 @@ typeset -a candidate_paths=(
   "$HOME/.venv-vllm-metal/bin"
   "$HOME/.cargo/bin"
   "$HOME/.dotnet/tools"
+  "$HOME/.mtplx/bin/mtplx"
 )
 
 local directory

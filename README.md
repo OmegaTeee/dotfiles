@@ -26,6 +26,12 @@ It does not require Oh My Zsh or another plugin manager.
 └── cache/
 ```
 
+## User manuals
+
+Short operating guides are stored under [`docs/`](docs/). Start with the
+[secrets quick start](docs/user-manuals/secrets-quick-start.md) for Keychain
+entries and environment variables.
+
 Core modules, app modules, and plugin files are discovered automatically in
 lexical order. Use numeric prefixes to control ordering.
 
