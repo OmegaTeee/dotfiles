@@ -7,7 +7,7 @@ A small plain-Zsh configuration with:
 - autoloaded functions
 - `plugins.d/`
 - application-specific configuration files
-- lazy secret and command wrappers
+- lazy secret command wrappers
 - mise-based Node runtime activation
 - `zsh-doctor`
 - `node-doctor`
@@ -18,19 +18,24 @@ It does not require Oh My Zsh or another plugin manager.
 
 ```text
 ~/.config/zsh/
-├── init.zsh
-├── core/
-├── apps.d/
-├── plugins.d/
-├── functions/
-└── cache/
+|-- init.zsh
+|-- core/
+|-- apps.d/
+|-- plugins.d/
+|-- functions/
+`-- cache/
 ```
 
 ## User manuals
 
-Short operating guides are stored under [`docs/`](docs/). Start with the
-[secrets quick start](docs/user-manuals/secrets-quick-start.md) for Keychain
-entries and environment variables.
+Short operating guides are stored under [`docs/`](docs/). Start with:
+
+- [Functions overview](docs/user-manuals/functions-overview.md) for autoloaded
+  commands.
+- [Colima and Docker](docs/user-manuals/colima-docker.md) for local Docker host
+  and devcontainer boundaries.
+- [Secrets quick start](docs/user-manuals/secrets-quick-start.md) for Keychain
+  environment variables.
 
 Core modules, app modules, and plugin files are discovered automatically in
 lexical order. Use numeric prefixes to control ordering.
@@ -88,7 +93,7 @@ registration. Put larger command implementations in separate autoload files:
 
 No manual registration is required. Restart Zsh.
 
-## Add a plugin
+## Add plugin
 
 Drop a file into:
 
@@ -96,21 +101,21 @@ Drop a file into:
 ~/.config/zsh/plugins.d/20-navigation.plugin.zsh
 ```
 
-It will be discovered automatically on the next shell start.
+It is discovered automatically on the next shell start.
 
 ## Compilation
 
 Every discovered module is compiled into:
 
 ```text
-the adjacent module.zsh.zwc file
+adjacent module.zsh.zwc file
 ```
 
 A module is recompiled only when its source is newer than its adjacent `.zwc`.
-This follows Zsh's native compiled-file lookup behavior.
-Autoloaded functions are not parsed until first invocation.
+This follows Zsh's native compiled-file lookup behavior. Autoloaded functions
+are not parsed until first invocation.
 
-Force a rebuild:
+Force rebuild:
 
 ```zsh
 zsh-recompile
@@ -123,7 +128,6 @@ zsh -n ~/.zshrc ~/.config/zsh/init.zsh \
   ~/.config/zsh/core/*.zsh \
   ~/.config/zsh/apps.d/*.zsh \
   ~/.config/zsh/plugins.d/*.plugin.zsh
-
 exec zsh
 zsh-doctor
 ```
@@ -136,4 +140,4 @@ zsh-doctor
 - pnpm owns global Node CLI packages through `PNPM_HOME`; npm remains the
   compatibility and publishing interface.
 - VS Code shell integration is not manually spawned by default.
-- `typeset -U` keeps PATH and FPATH unique.
+- `typeset -U` keeps `PATH` and `FPATH` unique.
