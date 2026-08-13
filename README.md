@@ -32,6 +32,8 @@ Short operating guides are stored under [`docs/`](docs/). Start with:
 
 - [Functions overview](docs/user-manuals/functions-overview.md) for autoloaded
   commands.
+- [Node package management](docs/user-manuals/node-package-management.md) for
+  Node.js runtimes, lockfiles, and dependency installs.
 - [Colima and Docker](docs/user-manuals/colima-docker.md) for local Docker host
   and devcontainer boundaries.
 - [Secrets quick start](docs/user-manuals/secrets-quick-start.md) for Keychain

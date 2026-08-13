@@ -33,8 +33,10 @@ secret_export() {
 secrets_load_github() {
   secret_export GITHUB_API_KEY GITHUB_API_KEY || return
   secret_export GITHUB_PAT GITHUB_PAT || return
+  secret_export CONTEXT7_API_KEY || return
   export GITHUB_PERSONAL_ACCESS_TOKEN="$GITHUB_PAT"
   export GITHUB_PAT_TOKEN="$GITHUB_PAT"
+  export CONTEXT7_API_KEY
 }
 
 secrets_load_ai() {
@@ -88,10 +90,10 @@ with_secrets() {
       ai)       secrets_load_ai ;;
       services) secrets_load_services ;;
       all)      secrets_load_all ;;
-      *)
-        print -u2 -- "Unknown secret profile: ${profile}"
-        return 2
-        ;;
+    *)
+      print -u2 -- "Unknown secret profile: ${profile}"
+      return 2
+      ;;
     esac || return
 
     command "$@"
