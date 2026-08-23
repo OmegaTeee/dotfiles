@@ -1,8 +1,6 @@
-# Colima and Docker
+# Colima Docker
 
-This guide starts the operating notes for local Colima and Docker use. The
-larger migration inventory is in
-[`CLI-MIGRATION-INVENTORY.md`](../../CLI-MIGRATION-INVENTORY.md).
+This guide starts with operating notes for local Colima and Docker use. The larger migration inventory is in [`CLI-MIGRATION-INVENTORY.md`](../../CLI-MIGRATION-INVENTORY.md).
 
 ## Ownership boundary
 
@@ -13,9 +11,7 @@ larger migration inventory is in
 | Devcontainer | Project runtimes, dependencies, compilers, linters, tests, and project CLIs. |
 | Project repository | `.devcontainer/`, Dockerfile, lockfiles, `packageManager`, `pyproject.toml`, and other project metadata. |
 
-Keep host control-plane tools on macOS. Do not copy the host PATH or global CLI
-directories into devcontainers. Install only the tools that the project
-metadata needs.
+Keep host control-plane tools on macOS. Do not copy host PATH or global CLI directories into devcontainers. Install only the tools project metadata needs.
 
 ## Shell functions
 
@@ -25,20 +21,17 @@ metadata needs.
 | `colima-status` | `colima status "$@"` |
 | `colima-stop` | `colima stop "$@"` |
 
-These wrappers intentionally pass arguments through to Colima. Use standard
-Colima flags when you need CPU, memory, architecture, or runtime changes.
+The wrappers intentionally pass arguments through to Colima. Use the standard Colima flags you need for CPU, memory, architecture, or runtime changes.
 
 ## Auto-start behavior
 
-`.config/zsh/apps.d/10-colima.zsh` can start Colima when you enter the project
-root. It is off by default.
+`.config/zsh/apps.d/10-colima.zsh` can start Colima when you enter the project root. It is off by default.
 
 ```zsh
 export ZSH_AUTO_START_COLIMA=1
 ```
 
-`COLIMA_PROJECT_ROOT` defaults to `PROJECT_FOLDER`. Set it only when the
-automatic start boundary must be different.
+`COLIMA_PROJECT_ROOT` defaults to `PROJECT_FOLDER`. Set it only if you need a different automatic boundary.
 
 ## Common checks
 
@@ -49,17 +42,23 @@ docker ps
 docker compose version
 ```
 
-If Docker commands fail, check `colima-status` first. Then verify the active
-Docker context. Do not fix a Docker context problem by installing project tools
-globally on the host.
+If Docker commands fail, check `colima-status` first. Then verify the active Docker context. Do not fix a Docker context problem by installing project tools globally on the host.
+
+## Reinstall host tooling
+
+If you need to reinstall or repair the host Docker and Colima setup on macOS, run:
+
+```zsh
+scripts/setup-colima-docker.sh
+```
+
+The helper installs Docker CLI tooling, configures `~/.docker/config.json`, links the Docker CLI plugins, and installs Colima. Start Colima after the script finishes if you need the VM running.
 
 ## Devcontainer guidance
 
-Use a project-owned `.devcontainer/` directory when a repository needs a
-container. Put project runtimes and package-manager versions in that project.
+Use a project-owned `.devcontainer/` directory when a repository needs a container. Put project runtimes and package-manager versions in the project.
 
-For host services that intentionally stay on macOS, use explicit endpoints from
-the container:
+For host services that intentionally stay on macOS, use explicit endpoints from the container:
 
 ```json
 {
@@ -70,15 +69,12 @@ the container:
 }
 ```
 
-Do not pass secrets through this file. Use a project-specific secret plan and
-keep credentials out of Git.
+Do not pass secrets through a file. Use the project-specific secret plan and keep credentials out of Git.
 
 ## Common pitfalls
 
 - Do not install `colima` inside application containers.
-- Do not bind-mount the complete host PATH into a devcontainer.
-- Do not rely on host global `node_modules`, Python virtual environments, or
-  caches from a project container.
+- Do not bind-mount complete host PATH into a devcontainer.
+- Do not rely on host global `node_modules`, Python virtual environments, or caches from a project container.
 - Do not add a second lockfile to hide a missing project dependency.
-- Do not move Metal/local model binaries into Linux containers. Expose a host
-  HTTP service when the project needs them.
+- Do not move Metal/local model binaries into Linux containers. Expose the host HTTP service when a project needs them.

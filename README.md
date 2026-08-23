@@ -1,7 +1,6 @@
 # Zsh Lite Framework
 
 A small plain-Zsh configuration with:
-
 - automatic module discovery
 - incremental `.zwc` compilation
 - autoloaded functions
@@ -28,19 +27,13 @@ It does not require Oh My Zsh or another plugin manager.
 
 ## User manuals
 
-Short operating guides are stored under [`docs/`](docs/). Start with:
+Short operating guides are stored under [`docs/`](docs/):
+- [Functions overview](docs/user-manuals/functions-overview.md)
+- [Node package management](docs/user-manuals/node-package-management.md)
+- [Colima Docker](docs/user-manuals/colima-docker.md)
+- [Secrets quick start](docs/user-manuals/secrets-quick-start.md)
 
-- [Functions overview](docs/user-manuals/functions-overview.md) for autoloaded
-  commands.
-- [Node package management](docs/user-manuals/node-package-management.md) for
-  Node.js runtimes, lockfiles, and dependency installs.
-- [Colima and Docker](docs/user-manuals/colima-docker.md) for local Docker host
-  and devcontainer boundaries.
-- [Secrets quick start](docs/user-manuals/secrets-quick-start.md) for Keychain
-  environment variables.
-
-Core modules, app modules, and plugin files are discovered automatically in
-lexical order. Use numeric prefixes to control ordering.
+Core modules, app modules, and plugin files are discovered automatically in lexical order. Use numeric prefixes to control ordering.
 
 ## Install
 
@@ -62,6 +55,9 @@ node-doctor
 zsh-recompile
 zsh-rebuild-completions
 restart-zsh
+scripts/sync-zsh-home.zsh
+scripts/setup-colima-docker.sh
+colima-setup
 
 colima-start
 colima-stop
@@ -78,6 +74,12 @@ goose-local
 prompthub-keys
 ```
 
+## Maintenance
+
+Use `scripts/sync-zsh-home.zsh` after repo edits to refresh the installed home shell config and back up the replaced files.
+Use `scripts/setup-colima-docker.sh` when you need to reinstall or repair the host Docker and Colima tooling.
+Use `colima-setup` when you want the same reinstall helper from an interactive shell.
+
 ## Add an application
 
 Create a dedicated file:
@@ -86,8 +88,7 @@ Create a dedicated file:
 ~/.config/zsh/apps.d/80-my-tool.zsh
 ```
 
-Use it for lightweight environment variables, PATH entries, aliases, and hook
-registration. Put larger command implementations in separate autoload files:
+Use it for lightweight environment variables, PATH entries, aliases, and hook registration. Put larger command implementations in separate autoload files:
 
 ```text
 ~/.config/zsh/functions/my-tool-command
@@ -95,7 +96,7 @@ registration. Put larger command implementations in separate autoload files:
 
 No manual registration is required. Restart Zsh.
 
-## Add plugin
+## Add a plugin
 
 Drop a file into:
 
@@ -107,15 +108,13 @@ It is discovered automatically on the next shell start.
 
 ## Compilation
 
-Every discovered module is compiled into:
+Every discovered module compiles into an adjacent `.zwc` file.
 
 ```text
-adjacent module.zsh.zwc file
+module.zsh.zwc
 ```
 
-A module is recompiled only when its source is newer than its adjacent `.zwc`.
-This follows Zsh's native compiled-file lookup behavior. Autoloaded functions
-are not parsed until first invocation.
+The module is recompiled only when its source is newer than its adjacent `.zwc`. This follows Zsh's native compiled-file lookup behavior. Autoloaded functions are not parsed until first invocation.
 
 Force rebuild:
 
@@ -139,7 +138,7 @@ zsh-doctor
 - `.p10k.zsh` remains separate and is not compiled.
 - Secrets remain lazy.
 - Homebrew provides `mise`; `mise` owns the active Node runtime.
-- pnpm owns global Node CLI packages through `PNPM_HOME`; npm remains the
-  compatibility and publishing interface.
+- pnpm owns global Node CLI packages through `PNPM_HOME`; npm remains a compatibility publishing interface.
+- Use `scripts/sync-zsh-home.zsh` after repo changes to refresh the installed home shell config.
 - VS Code shell integration is not manually spawned by default.
 - `typeset -U` keeps `PATH` and `FPATH` unique.

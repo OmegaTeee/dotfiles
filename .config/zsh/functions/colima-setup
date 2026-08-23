@@ -1,0 +1,32 @@
+#autoload
+emulate -L zsh
+
+local -a candidate_roots=()
+local repo_root script_path
+
+if [[ -n ${DOTFILES_REPO_ROOT:-} ]]; then
+  candidate_roots+=("$DOTFILES_REPO_ROOT")
+fi
+
+if (( $+commands[git] )); then
+  repo_root="$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null || true)"
+  [[ -n $repo_root ]] && candidate_roots+=("$repo_root")
+fi
+
+candidate_roots+=(
+  "$HOME/code/dotfiles"
+  "$HOME/src/dotfiles"
+  "$HOME/dotfiles"
+)
+
+for repo_root in $candidate_roots; do
+  script_path="$repo_root/scripts/setup-colima-docker.sh"
+  if [[ -x $script_path ]]; then
+    "$script_path" "$@"
+    return $?
+  fi
+done
+
+print -u2 -- "colima-setup: unable to find scripts/setup-colima-docker.sh"
+print -u2 -- "Set DOTFILES_REPO_ROOT if the repo lives somewhere else."
+return 1

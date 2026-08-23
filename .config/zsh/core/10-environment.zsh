@@ -9,8 +9,6 @@ export UV_CACHE_DIR="${HOME}/uv-cache"
 export PYTORCH_ENABLE_MPS_FALLBACK=1
 export PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.8
 
-export PNPM_HOME="${HOME}/Library/pnpm"
-
 export PH_ROUTER_URL="http://127.0.0.1:9090"
 export PH_DAEMON_MODEL="qwen3-4b-instruct-2507"
 
