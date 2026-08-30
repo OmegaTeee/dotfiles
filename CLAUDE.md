@@ -137,3 +137,105 @@ rtk init --global       # Add RTK to ~/.claude/CLAUDE.md
 
 Overall average: **60-90% token reduction** on common development operations.
 <!-- /rtk-instructions -->
+
+---
+
+<!-- headroom-mcp-instructions v1 -->
+# Headroom MCP - Context Compression for Large Tool Results
+
+Headroom provides intelligent compression of large, repetitive, or verbose tool output. Use these tools when investigating code, processing logs, or retrieving documents.
+
+## When to Use Headroom
+
+**Use compression when:**
+- Tool result exceeds 500 lines
+- File excerpts are repetitive or have common patterns
+- Log files contain duplicated entries
+- Generated reports have verbose structure
+- Retrieved documents have boilerplate sections
+
+**Do not compress when:**
+- Result is <500 lines
+- You need every detail for the answer
+- Output is already concise (git log, ls output, etc.)
+- Compression would lose critical context
+
+## Core Workflow
+
+### 1. Compress Large Results
+```bash
+# After running a large command that fills context
+mcp__headroom__headroom_compress "<large-output>" "describe-what-this-is"
+```
+
+**Preserves:** A retrieval reference (use it to get details later)
+
+**Examples:**
+```bash
+# Compress verbose test output
+mcp__headroom__headroom_compress "$test_output" "pytest failures from test_suite.py"
+
+# Compress API response
+mcp__headroom__headroom_compress "$curl_response" "GitHub API paginated list of PRs"
+
+# Compress build logs
+mcp__headroom__headroom_compress "$build_log" "TypeScript compilation errors from monorepo build"
+```
+
+### 2. Retrieve Compressed Details
+```bash
+# Use the retrieval reference when compressed form lacks needed details
+mcp__headroom__headroom_retrieve "<retrieval-reference>"
+```
+
+**When to use:**
+- Need full file paths from abbreviated results
+- Need exact error messages or stack traces
+- Need to see specific failure context
+- Implementation requires precise details
+
+**Example:**
+```bash
+# Compressed said "3 failures in utils" but you need details
+mcp__headroom__headroom_retrieve "test-output-ref-2024-08-30-1045"
+```
+
+### 3. Summarize After Investigation
+```bash
+# At end of large debugging session
+mcp__headroom__headroom_stats
+```
+
+**Shows:**
+- Total compression savings this session
+- Retrieval requests made
+- Space reclaimed for new analysis
+
+## Integration with RTK
+
+Headroom and RTK work together:
+- **RTK first:** Use `rtk` for initial filtering (tests, build, git)
+- **Then Headroom:** If RTK output is still large, compress it
+- **Result:** Minimal context footprint with full retrievability
+
+Example workflow:
+```bash
+rtk cargo test 2>&1 | tee /tmp/test.log    # RTK filters to failures
+mcp__headroom__headroom_compress "$(cat /tmp/test.log)" "cargo test failures"
+# Now you have compressed output + retrieval reference
+```
+
+## Policy
+
+**Always preserve the retrieval reference** returned by compression. Format: typically `<tool>-ref-<date>-<hash>` or UUID.
+
+Store it in your response context if you'll need to retrieve details later.
+
+### Example Response Pattern
+
+1. **Compressed analysis** (50 lines of essential info)
+2. **Retrieval reference**: `test-output-ref-2024-08-30-1234ab`
+3. **Implementation** (based on compressed summary)
+4. **Full retrieval only if** answer requires exact details
+
+<!-- /headroom-mcp-instructions -->
