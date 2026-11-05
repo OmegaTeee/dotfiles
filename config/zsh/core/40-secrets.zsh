@@ -1,4 +1,21 @@
 # Lazy macOS Keychain access.
+#
+# Use these helpers to load secrets only for the command that needs them.
+# This keeps API keys out of the parent shell, .zshrc, and VS Code settings.
+#
+# Example patterns:
+#   with_secrets ai env | grep OPENAI_API_KEY
+#   with_secrets ai code .
+#   with_secrets github gh auth status
+#   with_secrets services npm run deploy
+#
+# The key point is that the environment is created in a child process, so the
+# parent shell does not retain the secret values after the command exits.
+#
+# `code-ai` is a convenience wrapper for launching VS Code with the AI secrets
+# loaded only for that process. Example:
+#   code-ai .
+#   code-ai --reuse-window .
 
 keychain_secret() {
   emulate -L zsh
@@ -33,11 +50,13 @@ secret_export() {
 secrets_load_github() {
   secret_export GITHUB_API_KEY GITHUB_API_KEY || return
   secret_export GITHUB_PAT GITHUB_PAT || return
-  secret_export CONTEXT7_API_KEY || return
-  secret_export OPENSANDBOX_API_KEY || return
+  secret_export GITHUB_TOKEN GITHUB_TOKEN || return
+  secret_export CONTEXT7_API_KEY CONTEXT7_API_KEY || return
+  secret_export OPENSANDBOX_API_KEY OPENSANDBOX_API_KEY || return
 
   export GITHUB_PERSONAL_ACCESS_TOKEN="$GITHUB_PAT"
   export GITHUB_PAT_TOKEN="$GITHUB_PAT"
+  export GITHUB_TOKEN="$GITHUB_TOKEN"
   export CONTEXT7_API_KEY="$CONTEXT7_API_KEY"
   export OPENSANDBOX_API_KEY="$OPENSANDBOX_API_KEY"
 }
@@ -87,6 +106,15 @@ with_secrets() {
     return 2
   }
 
+  # The secrets are loaded in a subshell only for the command you pass. This is
+  # intentionally scoped and avoids exporting sensitive values into the current
+  # terminal session.
+  #
+  # Example:
+  #   with_secrets ai code .
+  #   with_secrets ai npm run dev
+  #   with_secrets github gh auth status
+  #   with_secrets all ./scripts/publish.zsh
   (
     case $profile in
       github)   secrets_load_github ;;
@@ -102,3 +130,17 @@ with_secrets() {
     command "$@"
   )
 }
+
+# Convenience wrappers.
+# These are designed for interactive use when you want the secret environment to
+# remain visible only to a single launched process.
+#
+# Example:
+#   code-ai .
+#   code-ai --reuse-window .
+#
+# This is equivalent to:
+#   with_secrets ai code .
+# code-ai() {
+#   with_secrets ai code "$@"
+# }

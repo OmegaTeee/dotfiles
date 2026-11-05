@@ -1,0 +1,4 @@
+{
+  "recommendations": [],
+  "unwantedRecommendations": ["anatolkaczmarek.python-setup-mac", "anatolkaczmarek.python-setup-core", "anatolkaczmarek.python-setup-ruff"]
+}

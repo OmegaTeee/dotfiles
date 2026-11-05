@@ -1,4 +1,4 @@
-# ~/.config/zsh/init.zsh
+# ~/config/zsh/init.zsh
 #
 # Framework entry point:
 # - automatic module discovery

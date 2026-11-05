@@ -42,7 +42,7 @@ cp ~/.zshrc ~/.zshrc.backup.$(date +%Y%m%d-%H%M%S)
 cp .zshrc ~/.zshrc
 
 mkdir -p ~/.config/zsh
-cp -R .config/zsh/. ~/.config/zsh/
+cp -R config/zsh/. ~/.config/zsh/
 
 exec zsh
 ```

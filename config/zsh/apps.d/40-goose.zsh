@@ -1,5 +1,5 @@
 # Goose integration.
-# Command bodies are autoloaded from ~/.config/zsh/functions.
+# Command bodies are autoloaded from ~/config/zsh/functions.
 
 export GOOSE_CLIENT_HOME="${HOME}/prompthub/clients/goose"
 

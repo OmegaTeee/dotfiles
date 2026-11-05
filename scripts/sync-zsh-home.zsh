@@ -33,7 +33,7 @@ replace_tree() {
 
 replace_file "$repo_root/.zshrc" "$HOME/.zshrc"
 replace_file "$repo_root/.zprofile" "$HOME/.zprofile"
-replace_tree "$repo_root/.config/zsh" "$HOME/.config/zsh"
+replace_tree "$repo_root/config/zsh" "$HOME/.config/zsh"
 
 print -- "Synced Zsh home config from:"
 print -- "  $repo_root"

@@ -6,9 +6,7 @@ export LLAMA_CACHE="${HOME}/.cache/llama.cpp"
 export LLAMA_ARG_FLASH_ATTN=1
 export LLAMA_ARG_CACHE_TYPE_K=q8_0
 export LLAMA_ARG_CACHE_TYPE_V=q8_0
-export LLAMA_ARG_THREADS=10
-export LLAMA_ARG_THREADS_BATCH=10
-export GGML_METAL_NO_RESIDENCY=1
+# export GGML_METAL_NO_RESIDENCY=1
 
 [[ -d "$LLAMA_CPP_HOME/build/bin" ]] &&
   path=("$LLAMA_CPP_HOME/build/bin" $path)

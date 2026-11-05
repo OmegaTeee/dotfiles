@@ -5,16 +5,11 @@ typeset -gU fpath FPATH
 
 typeset -a candidate_paths=(
  "$HOME/.local/bin"
- "$HOME/.lmstudio/bin"
- "$HOME/.lmstudio/llmster/current"
- "/opt/homebrew/opt/python@3/bin"
  "/Applications/Comet.app/Contents/MacOS"
  "$HOME/Applications/Comet.app/Contents/MacOS"
  "$HOME/.bun/bin"
- "$HOME/.venv-vllm-metal/bin"
  "$HOME/.cargo/bin"
  "$HOME/.dotnet/tools"
- "$HOME/.mtplx/bin/mtplx"
 )
 
 local directory

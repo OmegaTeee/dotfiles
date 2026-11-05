@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "tasks": [
+    {
+      "label": "Open VS Code with AI keys",
+      "type": "shell",
+      "command": "secrets_load_all code .",
+      "problemMatcher": []
+    }
+  ],
+  "configurations": [
+    // {
+    //   "name": "Python app (AI env)",
+    //   "type": "debugpy",
+    //   "request": "launch",
+    //   "program": "${workspaceFolder}/app.py",
+    //   "console": "integratedTerminal",
+    //   "env": {
+    //     "OPENAI_API_KEY": "${env:OPENAI_API_KEY}",
+    //     "HF_TOKEN": "${env:HF_TOKEN}",
+    //     "LMSTUDIO_TOKEN": "${env:LMSTUDIO_TOKEN}"
+    //   }
+    // }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "servers": {
+    "prompthub/bridge": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["/Users/visualval/prompthub/mcps/prompthub-bridge.js"],
+      "cwd": "/Users/visualval/.local/share/prompthub/mcps/",
+      "env": {
+        "AUTHORIZATION": "Bearer ${env:PH_API_TOKEN}",
+        "PROMPTHUB_URL": "http://127.0.0.1:9090",
+        "CLIENT_NAME": "claude-code",
+        "API_KEY": "${env:PH_API_TOKEN}",
+        "CONTENT_TYPE": "application/json",
+        "TOOL_DISCLOSURE": "progressive",
+        "TIER1_SERVERS": "sequential-thinking,context7,memory",
+        "EXCLUDE_TOOLS": "perplexity-comet,duckduckgo"
+      }
+    },
+    "oraios/serena": {
+      "type": "stdio",
+      "command": "serena",
+      "args": [
+        "start-mcp-server",
+        "--context=vscode",
+        "--project",
+        "${workspaceFolder}"
+      ]
+    },
+    "headroom": {
+      "command": "headroom",
+      "args": ["mcp", "serve"]
+    },
+    "fetch_mcp": {
+      "type": "stdio",
+      "command": "mcp-server-fetch"
+    }
+  },
+  "inputs": []
+}
