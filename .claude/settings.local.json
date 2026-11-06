@@ -1,6 +1,6 @@
 {
   "env": {
-    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8787/p/workspacefolder",
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8788/p/dotfiles",
     "HEADROOM_OUTPUT_SHAPER": "1"
   }
 }

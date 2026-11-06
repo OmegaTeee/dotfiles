@@ -1,2 +1,4 @@
 *.zwc
+*.DS_Store
 .history
+

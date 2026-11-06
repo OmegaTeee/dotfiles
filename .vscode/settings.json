@@ -1,24 +1,4 @@
 {
-  // ── Terminal/CLI  ──────────────────────────────────
-  "terminal.integrated.cwd": "${workspaceFolder}",
-  "terminal.integrated.enablePersistentSessions": true,
-  // "terminal.integrated.env.osx": {
-  //   "PATH": "${workspaceFolder}:${env:PATH}",
-  //   "USERHOME": "/Users/visualval"
-  // },
-  "terminal.integrated.defaultProfile.osx": "dotfiles",
-  "terminal.integrated.profiles.osx": {
-    "dotfiles": {
-      "icon": "tag",
-      "overrideName": false,
-      "path": "/bin/zsh",
-      "args": ["-lc", "exec zsh -l; secrets_load_all code ${workspaceFolder}"],
-      "cwd": "${workspaceFolder}",
-      "PATH": "${workspaceFolder}:${env:PATH}",
-      "USERHOME": "/Users/visualval"
-    }
-  },
-
   // ── Explorer/Editor  ──────────────────────────────────
   "files.exclude": {
     "*.zwc": true,
@@ -28,27 +8,8 @@
     "*.zwc": true,
     "**/.history": true
   },
-  "files.watcherExclude": {},
-
-  // ── Chat/Agent  ─────────────────────────────────────────
-  "chat.mcp.serverSampling": {
-    "prompthub/bridge": {
-      "allowedModels": ["*"]
-    },
-    "oraios/serena": {
-      "allowedModels": ["*"]
-    },
-    "headroom": {
-      "allowedModels": ["*"]
-    }
-  },
-  "chat.tools.terminal.autoApprove": {
-    "${workspaceFolder}": true
-  },
-  "chat.disableAIFeatures": false,
-  "easy-headroom.tokensave.enabled": true,
-  // --- Headroom Copilot proxy --- (comma-added)
-  "github.copilot.advanced.debug.overrideCapiUrl": "http://127.0.0.1:8787/p/${workspaceFolder}",
-  "github.copilot.advanced.debug.overrideProxyUrl": "http://127.0.0.1:8787/p/${workspaceFolder}"
-  // --- end Headroom Copilot proxy ---
+  "files.watcherExclude": {
+    "*.zwc": true,
+    "**/.history": true
+  }
 }

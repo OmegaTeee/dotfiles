@@ -1,13 +1,6 @@
 {
   "version": "0.2.0",
-  "tasks": [
-    {
-      "label": "Open VS Code with AI keys",
-      "type": "shell",
-      "command": "secrets_load_all code .",
-      "problemMatcher": []
-    }
-  ],
+  "tasks": [],
   "configurations": [
     // {
     //   "name": "Python app (AI env)",

@@ -8,7 +8,7 @@
       "env": {
         "AUTHORIZATION": "Bearer ${env:PH_API_TOKEN}",
         "PROMPTHUB_URL": "http://127.0.0.1:9090",
-        "CLIENT_NAME": "claude-code",
+        "CLIENT_NAME": "vscode",
         "API_KEY": "${env:PH_API_TOKEN}",
         "CONTENT_TYPE": "application/json",
         "TOOL_DISCLOSURE": "progressive",
@@ -23,16 +23,13 @@
         "start-mcp-server",
         "--context=vscode",
         "--project",
-        "${workspaceFolder}"
+        "--project-from-cwd"
       ]
     },
-    "headroom": {
-      "command": "headroom",
-      "args": ["mcp", "serve"]
-    },
-    "fetch_mcp": {
+    "headroom-ai": {
       "type": "stdio",
-      "command": "mcp-server-fetch"
+      "command": "headroom",
+      "args": ["mcp", "serve", "--proxy-url", "http://127.0.0.1:8788"]
     }
   },
   "inputs": []
