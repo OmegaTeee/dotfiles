@@ -44,13 +44,3 @@ items concrete, scoped, and verifiable.
   removed from existing local installations during bootstrap.
 - [ ] Review application modules for stale paths and move one-off machine
   state into documented setup steps where appropriate.
-
-## Completed baseline
-
-- [x] Homebrew provides mise, and mise manages the active Node runtime.
-- [x] Node 24.18.0 is installed and selected through mise.
-- [x] npm retains the `~/.npm-global` compatibility prefix.
-- [x] pnpm is installed under `PNPM_HOME` and `pnpm help` succeeds.
-- [x] `node-doctor` reports runtime paths, prefixes, project pins, and
-  duplicate Node candidates.
-- [x] Secret-loading helpers use macOS Keychain rather than committing tokens.
