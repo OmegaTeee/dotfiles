@@ -24,7 +24,6 @@
   - changed-files:
       - any-glob-to-any-file:
           - "config/zsh/plugins.d/**"
-          - "config/zsh/themes/**"
           - "config/zsh/.p10k.zsh"
 
 "area:colima":

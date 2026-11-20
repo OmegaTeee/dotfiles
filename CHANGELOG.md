@@ -20,5 +20,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/). This rep
 - **`.github/copilot-instructions.md` rewritten**: it no longer recommends Serena for zsh code, follows `AGENTS.md`, and has a short review checklist. The Source Control "review changes" command reads this file, not the review-instructions setting.
 - **`README.md` rewritten for clarity**, with the same sections. The testing section now describes the full command check, and a new continuous integration section was added.
 
+- **`TODOs.md` refreshed** against the live system on 2026-11-20. Removed the finished install-method items (done by `sync-home.zsh`) and the validation-entry-point item (done by `scripts/lint.zsh` and CI). Added the still-relevant items from the July `docs/plans/CLI-MIGRATION-INVENTORY.md`, after checking each one: npm globals, broken pipx launchers, `~/.local/bin` provenance. Also added a new item about tools re-creating `~/.zshrc`.
+
+### Removed
+- **`config/zsh/themes/`**: an unused symlink into the versioned Homebrew path `Cellar/powerlevel10k/1.20.0`, which would have broken on the next `brew upgrade`, and a byte-identical copy of Homebrew's `powerlevel10k.zsh-theme`. Nothing loaded either. `core/90-prompt.zsh` sources the theme from `/opt/homebrew/share/powerlevel10k`, which Homebrew repoints on upgrade.
+
 ### Fixed
 - **XDG completions load**: `core/60-completions.zsh` now adds `${XDG_DATA_HOME:-~/.local/share}/zsh/site-functions` to `fpath`. Installers that follow XDG put completions there (zshellcheck's adds `_zshellcheck`), but their usual `fpath+=` line goes into `~/.zshrc`, which this setup never reads. Run `zsh-rebuild-completions` once so the cached completion dump picks up new entries.
