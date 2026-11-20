@@ -1,5 +1,8 @@
 # Shared non-secret environment.
 
+# Where this dotfiles repo lives. Used by colima-setup, colima-test, etc.
+export DOTFILES_REPO_ROOT="${DOTFILES_REPO_ROOT:-$HOME/workspaces/dotfiles}"
+
 export MAGICK_HOME="/opt/homebrew"
 export AUTOTRACE="/opt/homebrew/bin/autotrace"
 
@@ -12,8 +15,14 @@ export PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.8
 export PH_ROUTER_URL="http://127.0.0.1:9090"
 export PH_DAEMON_MODEL="qwopus3-5-9b-coder-flash-i1"
 
-export HF_HUB_CACHE="${HOME}/.cache/huggingface/hub"
-export PROJECT_FOLDER="${HOME}/workspaces"
+export LM_STUDIO_API_URL="http://127.0.0.1:1234/v1"
 
-export RAPID_MLX_TELEMETRY=0
+# Tokens (LM_API_TOKEN, HF_TOKEN, ...) are NOT exported here. They come from
+# the macOS Keychain per command: `with_secrets ai <cmd>` (core/40-secrets.zsh).
+
+export HF_HUB_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/huggingface/hub"
 export HF_HUB_OFFLINE=0
+
+# export PROJECT_FOLDER="${HOME}/workspaces"
+# export RAPID_MLX_TELEMETRY=0
+

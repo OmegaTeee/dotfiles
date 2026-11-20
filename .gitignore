@@ -1,4 +1,10 @@
 *.zwc
-*.DS_Store
-.history
+**/.DS_Store
+**/.history
 
+
+# Local-only: never commit app state or secrets
+home/headroom
+**/*.backup.*
+node_modules/
+.tokensave/

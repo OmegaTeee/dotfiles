@@ -1,0 +1,70 @@
+#autoload
+# Manage persistent Headroom deployments by profile.
+#
+#   headroom-deploy <start|stop|restart|status|health|logs> [profile|shorthand] [-v]
+#
+# The profile defaults to $HEADROOM_DEFAULT_PROFILE. Shorthands come from
+# $HEADROOM_PROFILE_ALIASES (apps.d/20-headroom.zsh), e.g. `lms`.
+emulate -L zsh
+
+local action=${1:-}
+local requested=${2:-${HEADROOM_DEFAULT_PROFILE:-default}}
+local deploy_root="${HEADROOM_HOME:-$HOME/.headroom}/deploy"
+
+if [[ -z $action || $action == (-h|--help) ]]; then
+  print -r -- "Usage: headroom-deploy <start|stop|restart|status|health|logs> [profile]"
+  print -r -- "Profiles:"
+  local p
+  for p in ${deploy_root}/*/manifest.json(N:h:t); do
+    print -r -- "  $p"
+  done
+  print -r -- "Shorthands: ${(kj:, :)HEADROOM_PROFILE_ALIASES}"
+  [[ -n $action ]]; return
+fi
+
+local profile=${HEADROOM_PROFILE_ALIASES[$requested]:-$requested}
+local profile_dir="$deploy_root/$profile"
+local manifest="$profile_dir/manifest.json"
+
+if [[ ! -r $manifest ]]; then
+  print -u2 -- "headroom-deploy: unknown profile '$requested' (no $manifest)"
+  return 1
+fi
+
+case $action in
+  start|stop|restart|status)
+    (( $+commands[headroom] )) || { print -u2 -- "headroom-deploy: headroom CLI not found"; return 127 }
+    command headroom install "$action" --profile "$profile"
+    ;;
+  health)
+    local line url
+    for line in "${(@f)$(<$manifest)}"; do
+      if [[ $line =~ '"health_url"[[:space:]]*:[[:space:]]*"([^"]+)"' ]]; then
+        url=$match[1]; break
+      fi
+    done
+    [[ -n $url ]] || { print -u2 -- "headroom-deploy: no health_url in $manifest"; return 1 }
+    local body
+    body=$(command curl --fail --silent --show-error --max-time 5 "$url") || {
+      print -u2 -- "$profile ($url): DOWN"
+      return 1
+    }
+    if [[ ${3:-} == (-v|--verbose) ]]; then
+      print -r -- "$body"
+    else
+      local svc_status=unknown uptime=?
+      [[ $body =~ '"status":"([a-z]+)"' ]] && svc_status=$match[1]
+      [[ $body =~ '"uptime_seconds":([0-9]+)' ]] && uptime=$(( match[1] / 60 ))m
+      print -r -- "$profile ($url): $svc_status, up $uptime"
+    fi
+    ;;
+  logs)
+    local log_file="$profile_dir/runner.log"
+    [[ -r $log_file ]] || { print -u2 -- "headroom-deploy: no log at $log_file"; return 1 }
+    command tail -n 50 -f "$log_file"
+    ;;
+  *)
+    print -u2 -- "headroom-deploy: unknown action '$action'"
+    return 2
+    ;;
+esac
