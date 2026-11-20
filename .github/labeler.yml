@@ -1,0 +1,60 @@
+# Path-based label rules for actions/labeler.
+# Labels are applied when a PR opens or updates, so you can filter PRs by
+# area and spot changes that touch more than they should. A PR that touches
+# several areas gets several labels.
+
+"area:shell-core":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "config/zsh/core/**"
+          - "config/zsh/init.zsh"
+          - "config/zsh/.zshrc"
+          - "config/zsh/.zprofile"
+          - "home/zshenv"
+
+"area:apps":
+  - changed-files:
+      - any-glob-to-any-file: ["config/zsh/apps.d/**"]
+
+"area:functions":
+  - changed-files:
+      - any-glob-to-any-file: ["config/zsh/functions/**"]
+
+"area:plugins":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "config/zsh/plugins.d/**"
+          - "config/zsh/themes/**"
+          - "config/zsh/.p10k.zsh"
+
+"area:colima":
+  - changed-files:
+      - any-glob-to-any-file: ["config/colima/**"]
+
+"area:macos":
+  - changed-files:
+      - any-glob-to-any-file: ["macos/**", "local/**"]
+
+"area:scripts":
+  - changed-files:
+      - any-glob-to-any-file: ["scripts/**"]
+
+"area:docs":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/**"
+          - "*.md"
+          - "home/README.md"
+
+"area:agents":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "AGENTS.md"
+          - "CLAUDE.md"
+          - ".github/*instructions*.md"
+          - ".serena/**"
+          - ".vscode/**"
+
+"area:ci":
+  - changed-files:
+      - any-glob-to-any-file: [".github/workflows/**", ".github/labeler.yml", ".github/dependabot.yml"]

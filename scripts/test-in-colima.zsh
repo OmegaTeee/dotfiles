@@ -68,7 +68,8 @@ grep -q "changed: 0" <<<"$out"
 step "syntax"
 cfg=$HOME/.config/zsh
 zsh -n "$HOME/.zshenv" "$cfg/.zshrc" "$cfg/.zprofile" "$cfg/init.zsh" \
-  "$cfg"/core/*.zsh "$cfg"/apps.d/*.zsh "$cfg"/plugins.d/*.plugin.zsh
+  "$cfg"/core/*.zsh "$cfg"/core/*.sh "$cfg"/apps.d/*.zsh \
+  "$cfg"/plugins.d/*.plugin.zsh "$cfg"/functions/*
 echo "ok"
 
 step "interactive login shell"
@@ -79,9 +80,10 @@ zsh -lic '
   (( ${#ZSH_FAILED_MODULES} == 0 )) || { print -l -- "FAILED:" $ZSH_FAILED_MODULES; exit 1 }
   [[ $ZDOTDIR  == $HOME/.config/zsh ]]          || { print "bad ZDOTDIR"; exit 1 }
   [[ $HISTFILE == $HOME/.local/state/zsh/history ]] || { print "bad HISTFILE"; exit 1 }
-  whence -w zsh-doctor headroom-deploy colima-test
-  alias hr-lms-restart hr-init-status
 '
+
+step "every function and alias is present"
+zsh -lic 'source /repo/scripts/check-commands.zsh'
 
 step "zsh-doctor (informational)"
 zsh -lic 'zsh-doctor' || echo "(zsh-doctor reported warnings; expected on Linux without Homebrew)"

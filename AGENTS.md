@@ -1,71 +1,110 @@
 # AGENTS.md
 
-## Project scope
+Instructions for coding agents working in this repository. [`CLAUDE.md`](CLAUDE.md) imports this file. For the user-facing overview, see [`README.md`](README.md).
 
-This repository contains a small, plain-Zsh configuration framework for the
-local macOS environment. The tracked tree is the source of truth for shell
-configuration; the active installation currently lives at `~/.config/zsh/`.
+## What this repo is
 
-## Repository conventions
+A plain-Zsh configuration for macOS, using an XDG layout and no plugin manager.
 
-- Numeric filename prefixes define load order.
-- `core/` contains shared environment, PATH, options, secrets, completions,
-  integrations, and prompt setup.
-- `apps.d/` contains application-specific environment and hooks.
-- `plugins.d/` contains optional plugin modules.
-- `functions/` contains autoloaded commands.
-- Adjacent `.zwc` files are generated Zsh bytecode. Do not edit or commit them.
-- Preserve unrelated working-tree changes and inspect `git status --short`
-  before making focused edits.
+**This repo is a staging copy.** Editing a file here does not change the live shell. Changes go live only when the user runs `scripts/sync-home.zsh`. Don't run it unless the user asks; `--dry-run` is always safe.
 
-## Editing guidance
+| Repo path                    | Installed to                    | Notes                                     |
+| ---------------------------- | ------------------------------- | ----------------------------------------- |
+| `home/zshenv`                | `~/.zshenv`                     | Sets `XDG_*` and `ZDOTDIR=~/.config/zsh`  |
+| `config/zsh/`                | `~/.config/zsh/`                | Whole folder is replaced on every sync    |
+| `config/colima/<p>/colima.yaml` | `~/.colima/<p>/colima.yaml`  | Only if that Colima profile exists        |
+| `local/bin/*`                | `~/.local/bin/`                 | Individual files                          |
+| `macos/LaunchAgents/*.plist` | `~/Library/LaunchAgents/`       | Reloaded with `launchctl`                 |
+| `scripts/`, `docs/`          | not installed                   | Sync and test tools, user manuals         |
 
-- Keep environment variables in `.config/zsh/core/10-environment.zsh`.
-- Keep PATH changes in `.config/zsh/core/20-path.zsh` and preserve unique Zsh
-  `path`/`PATH` handling.
-- Keep runtime-manager activation in `.config/zsh/core/25-mise.zsh`.
-- Keep Node and package-manager diagnostics in the autoloaded
-  `.config/zsh/functions/node-doctor` function.
-- Use a new numbered module for new application or integration behavior rather
-  than expanding an unrelated module.
-- Explain why non-obvious workarounds exist; avoid comments that only restate
-  the code.
-- The active `~/.config/zsh/` tree is currently copy-installed. Do not assume
-  a repository edit changes the live shell until it is synchronized and
-  verified.
+Every path in this file is relative to the repo root. Don't edit `~/.config/zsh/` directly: the next sync replaces it.
 
-## Secrets and generated state
+## Where changes go
 
-- Never commit API keys, npm tokens, passwords, or other credentials.
-- `core/40-secrets.zsh` provides lazy macOS Keychain access through
-  `with_secrets` and `secret_export`.
-- Keep caches, logs, global package directories, and generated launchers out
-  of the repository.
-- Homebrew provides the `mise` executable; mise manages the active Node
-  runtime. pnpm owns global Node CLI packages through `PNPM_HOME`, while npm
-  retains its compatibility/publishing prefix.
-- npm configuration migration is intentionally deferred. A future tracked
-  npm config must contain only non-secret settings; publishing credentials
-  belong in Keychain or an equivalent secret mechanism.
-- The current global mise config at `~/.config/mise/config.toml` is also
-  intentionally outside the repository until the later symlink/config migration.
+All paths below are under `config/zsh/`.
+
+| Change                            | File                                                |
+| --------------------------------- | --------------------------------------------------- |
+| Environment variable              | `core/10-environment.zsh`                           |
+| `PATH` entry                      | `core/20-path.zsh` (keep the `typeset -U path` handling) |
+| Runtime manager (mise) activation | `core/25-mise.zsh`                                  |
+| Secret mapping                    | `core/40-secrets.zsh`                               |
+| A new tool's env, PATH or aliases | A new numbered module, `apps.d/NN-tool.zsh`         |
+| A plugin                          | `plugins.d/NN-name.plugin.zsh` (the suffix is required) |
+| A command with real logic         | `functions/<name>`, an autoloaded file with no extension |
+| A Headroom profile shorthand      | `HEADROOM_PROFILE_ALIASES` in `apps.d/20-headroom.zsh` |
+
+- Numeric prefixes set load order within each folder.
+- Add a new module rather than growing an unrelated one.
+- Autoloaded function files start with `#autoload`, then `emulate -L zsh`.
+- A new app config folder (`config/<app>/`) also needs a mapping line in `scripts/sync-home.zsh`.
+- Comments explain why a non-obvious workaround exists. Don't restate the code.
+
+## Rules that are easy to break
+
+- **A module fails if its last command returns non-zero.** `init.zsh` records it in `ZSH_FAILED_MODULES`, and `colima-test` then fails. Write optional steps as `if [[ -d … ]]; then …; fi`, not `[[ -d … ]] && …`.
+- **`.zwc` files are generated bytecode.** Never edit or commit them.
+- **`core/65-completions-ast-grep.sh` is zsh, not bash**, despite its extension. Don't run shellcheck on it or "fix" it to bash syntax.
+- **Preserve unrelated working-tree changes.** Run `git status --short` before editing.
+- **Use the existing lockfile** (`pnpm-lock.yaml`). Don't add a second package-manager lockfile to fix a shell problem.
+
+## Secrets and state
+
+- Never commit API keys, tokens, passwords or other credentials, and never print their values.
+- Secrets live in the macOS Keychain. They load per command through `with_secrets <group> <cmd>` (groups: `ai`, `github`, `services`), defined in `core/40-secrets.zsh`. Modules never export tokens.
+- Keep caches, logs, databases, global package folders and generated launchers out of the repo. `~/.headroom/` and `~/.colima/` (except `colima.yaml`) never enter it. See [`home/README.md`](home/README.md).
+- Homebrew provides `mise`, and mise provides Node. pnpm owns global Node CLIs through `PNPM_HOME`; npm keeps only its compatibility and publishing prefix.
+- These are deliberately not in the repo yet: `~/.config/mise/config.toml` and npm config. Any future tracked npm config must hold only non-secret settings.
 
 ## Validation
 
-Run these checks after shell changes:
+Run from the repo root after shell changes:
 
 ```zsh
-zsh -n ~/.zshrc ~/.config/zsh/init.zsh \
-  ~/.config/zsh/core/*.zsh \
-  ~/.config/zsh/apps.d/*.zsh \
-  ~/.config/zsh/plugins.d/*.plugin.zsh
-zsh-doctor
+zsh scripts/lint.zsh   # zsh -n on every zsh file, shellcheck on scripts/*.sh
 git diff --check
+colima-test
 ```
 
-For package-manager changes, verify the effective commands and prefixes in a
-fresh shell. Project package-manager selection follows the repository lockfile;
-do not introduce a second lockfile to solve a shell configuration problem.
+- CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs the same two scripts on every push and pull request to `main`, so a local pass should mean a CI pass.
+- `colima-test` runs the full setup in a throwaway Linux container. It needs the `linux-vm` Colima profile running (`colima start -p linux-vm`). On a first run, before `colima-test` is installed, use `zsh scripts/test-in-colima.zsh`.
+- The test fails if any function in `config/zsh/functions/` or any alias defined in a module is missing after startup ([`scripts/check-commands.zsh`](scripts/check-commands.zsh)). An alias whose name is built from variables must be added to that script by hand, as the Headroom aliases are.
+- Record user-visible changes under `## [Unreleased]` in [`CHANGELOG.md`](CHANGELOG.md).
+- If a check can't run, say which one and why. Don't report it as passed.
+- For package-manager changes, also check the effective commands and prefixes in a fresh shell with `node-doctor`.
 
-When running shell commands in this workspace, use the local `rtk` command
-prefix where available, as documented by the workspace instructions.
+## Tools
+
+Tools are optional and may not exist in every agent or environment. Check before relying on one; if it's missing, use an alternative. Don't install, update or register tools unless asked.
+
+### Headroom
+
+- When the agent client is configured for the `init-visualval` proxy, its address is `http://127.0.0.1:8787`.
+- The proxy is managed outside this repo. Don't start another proxy, change its upstream settings, or add a project-level Headroom MCP server.
+- Use Headroom MCP tools only if the client exposes them.
+- If model or API traffic seems to bypass the proxy or fails, report it and look at the existing client configuration. Don't silently switch to a direct upstream.
+
+### RTK
+
+- If an RTK hook is active, run normal commands. Don't add a second `rtk` prefix.
+- If no hook is active, use `rtk <command>` only when RTK is installed and supports that command.
+- RTK can shorten output. When exact output matters or a result looks incomplete, run the original command or RTK's unfiltered option.
+- RTK's savings figures are estimates for command output, not guarantees about total model usage.
+
+### Serena
+
+- The project is registered as `dotfiles-staging`. A separate `dotfiles` project at `~/code/dotfiles` is a different repo.
+- Only the bash language server is active, so symbol tools work on `scripts/setup-colima-docker.sh` and nothing else. They reject `.zsh` files and autoload functions, and they misread `core/65-completions-ast-grep.sh`. Use text search for zsh code.
+- Project memories are in `.serena/memories/`. Start with `core`.
+
+### Other code tools
+
+- `ast-grep`: syntax-aware search and structural edits. Review the matches and the diff before accepting.
+- `difft`: readable code-aware diffs. Git's diff stays the source of truth for the exact patch.
+- `scc`: code-size metrics. Run it only when the task calls for it.
+- Codebase-index MCP tools (tokensave, Codebase Memory): use them only when the client exposes them and the repo is indexed. Check important findings against the source.
+
+## Before you finish
+
+- Ask before adding dependencies, changing deployment or production configuration, running destructive operations, syncing to the live home, or committing, pushing or publishing.
+- Hand off with what changed, which checks ran and their results, and any known limitations or follow-up work.
