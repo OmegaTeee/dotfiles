@@ -19,9 +19,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/). This rep
 - **Agent guidance consolidated in `AGENTS.md`**: fixed stale pre-XDG `.config/zsh/...` paths, moved the general tool guidance (Headroom, RTK, ast-grep, difft, scc) out of `CLAUDE.md`, and added a "where changes go" table, the rules that are easy to break, and a Serena section stating that it only covers bash files. `CLAUDE.md` now imports `AGENTS.md` with `@AGENTS.md` and keeps only Claude-specific notes.
 - **`.github/copilot-instructions.md` rewritten**: it no longer recommends Serena for zsh code, follows `AGENTS.md`, and has a short review checklist. The Source Control "review changes" command reads this file, not the review-instructions setting.
 - **`README.md` rewritten for clarity**, with the same sections. The testing section now describes the full command check, and a new continuous integration section was added.
-
 - **`TODOs.md` refreshed** against the live system on 2026-11-20. Removed the finished install-method items (done by `sync-home.zsh`) and the validation-entry-point item (done by `scripts/lint.zsh` and CI). Added the still-relevant items from the July `docs/plans/CLI-MIGRATION-INVENTORY.md`, after checking each one: npm globals, broken pipx launchers, `~/.local/bin` provenance. Also added a new item about tools re-creating `~/.zshrc`.
-
+- **Serena project renamed back to `dotfiles`**, matching the folder and the GitHub repo. The `dotfiles-staging` name only existed to avoid clashing with an old second clone at `~/code/dotfiles`, which is now retired (archived under `~/.local/state/dotfiles/archive/`). `colima-setup` no longer looks for the repo there.
 - **VS Code workspace**: `.vscode/mcp.json` is now a symlink to a root `.mcp.json`, which defines the PromptHub bridge server. The token comes from `${env:PH_API_TOKEN}`, not from the file. Settings add Claude Code preferences and a Markdown preview stylesheet (`docs/markdown.css`). `.vscode/extensions.json` is reformatted.
 - **`home/zshenv`** shebang is now `#!/usr/bin/env zsh`.
 

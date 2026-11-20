@@ -1,7 +1,7 @@
 # the name by which the project can be referenced within Serena/when chatting with the LLM.
 # This project is a staging workspace for shell configuration. The live account files in
 # the active home directory remain unchanged until the sync script is run.
-project_name: "dotfiles-staging"
+project_name: "dotfiles"
 
 # the encoding used by text files in the project
 # For a list of possible encodings, see https://docs.python.org/3.11/library/codecs.html#standard-encodings

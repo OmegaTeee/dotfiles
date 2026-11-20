@@ -20,7 +20,7 @@ Canonical agent guidance is `AGENTS.md` (CLAUDE.md just imports it via `@AGENTS.
 - A module "fails" if its LAST command returns non-zero -> write optional steps as `if [[ ... ]]; then ...; fi`, never `[[ ... ]] && ...` as a final line.
 - Secrets: macOS Keychain only, loaded per-command via `with_secrets <group> cmd` (`core/40-secrets.zsh`). Never export tokens from a module; never commit credentials. `~/.headroom` state never enters the repo.
 - History lives in `~/.local/state/zsh/history`; sync backups in `~/.local/state/dotfiles/backups/<epoch>/`.
-- Serena: project name is `dotfiles-staging` (distinct from `dotfiles` at `~/code/dotfiles`). Only the bash LSP is active, so symbol tools work on `.sh` files only, not `.zsh` or extensionless autoload functions.
+- Serena: project name is `dotfiles` (same as folder and GitHub repo; the old `~/code/dotfiles` clone was retired 2026-11-20). Only the bash LSP is active, so symbol tools work on `.sh` files only, not `.zsh` or extensionless autoload functions.
 - `.github/copilot-instructions.md` overstates Serena's zsh coverage; trust `AGENTS.md`.
 
 ## Further memories
