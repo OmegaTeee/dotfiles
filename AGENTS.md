@@ -93,7 +93,7 @@ Tools are optional and may not exist in every agent or environment. Check before
 
 ### Serena
 
-- The project is registered as `dotfiles-staging`. A separate `dotfiles` project at `~/code/dotfiles` is a different repo.
+- The project is registered as `dotfiles`, matching the folder and the GitHub repo.
 - Only the bash language server is active, so symbol tools work on `scripts/setup-colima-docker.sh` and nothing else. They reject `.zsh` files and autoload functions, and they misread `core/65-completions-ast-grep.sh`. Use text search for zsh code.
 - Project memories are in `.serena/memories/`. Start with `core`.
 

@@ -15,7 +15,6 @@ fi
 
 candidate_roots+=(
   "$HOME/workspaces/dotfiles"
-  "$HOME/code/dotfiles"
   "$HOME/src/dotfiles"
   "$HOME/dotfiles"
 )
