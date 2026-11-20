@@ -22,7 +22,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/). This rep
 
 - **`TODOs.md` refreshed** against the live system on 2026-11-20. Removed the finished install-method items (done by `sync-home.zsh`) and the validation-entry-point item (done by `scripts/lint.zsh` and CI). Added the still-relevant items from the July `docs/plans/CLI-MIGRATION-INVENTORY.md`, after checking each one: npm globals, broken pipx launchers, `~/.local/bin` provenance. Also added a new item about tools re-creating `~/.zshrc`.
 
+- **VS Code workspace**: `.vscode/mcp.json` is now a symlink to a root `.mcp.json`, which defines the PromptHub bridge server. The token comes from `${env:PH_API_TOKEN}`, not from the file. Settings add Claude Code preferences and a Markdown preview stylesheet (`docs/markdown.css`). `.vscode/extensions.json` is reformatted.
+- **`home/zshenv`** shebang is now `#!/usr/bin/env zsh`.
+
 ### Removed
+- **`docs/plans/CLI-MIGRATION-INVENTORY.md`**: a July 2026 snapshot. Its still-valid items moved to `TODOs.md`.
+- **Tracked `.DS_Store` files** (`.serena/`, `docs/`, `home/`). `.gitignore` already excluded them; these were committed before that rule.
 - **`config/zsh/themes/`**: an unused symlink into the versioned Homebrew path `Cellar/powerlevel10k/1.20.0`, which would have broken on the next `brew upgrade`, and a byte-identical copy of Homebrew's `powerlevel10k.zsh-theme`. Nothing loaded either. `core/90-prompt.zsh` sources the theme from `/opt/homebrew/share/powerlevel10k`, which Homebrew repoints on upgrade.
 
 ### Fixed

@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # ~/.zshenv. Installed from home/zshenv by scripts/sync-home.zsh.
 #
 # This is the only Zsh file in $HOME. Zsh reads it for every shell, then

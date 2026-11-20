@@ -5,6 +5,16 @@
   "github.copilot.chat.reviewSelection.instructions": [
     { "file": ".github/review-instructions.md" }
   ],
+  "claudeCode.enableNewConversationShortcut": true,
+  "claudeCode.hideOnboarding": true,
+  "claudeCode.lockEditorGroups": false,
+  "claudeCode.respectGitIgnore": false,
+  // "claudeCode.spinnerVerbs": {
+  //   "mode": "append",
+  //   "verbs": []
+  // },
+  // "claudeCode.usePythonEnvironment": true,
+  "markdown.styles": ["docs/markdown.css"],
   // ── Explorer/Editor  ──────────────────────────────────
   "files.exclude": {
     "*.zwc": true,
