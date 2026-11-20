@@ -1,0 +1,633 @@
+/* Modern - A clean, native look with rounded code blocks and tables */
+
+:root {
+  --font-mono: "SF Mono Ligatures", ui-monospace, "SF Mono", monospace;
+  --font-sans:
+    "SF Pro Text", ui-sans-serif, -apple-system, "SF Pro", sans-serif;
+  --font-size: 12px;
+  --font-lheight: calc(1ex * 2.5);
+  --corner-shape: squircle;
+  --white: rgba(222, 227, 227, 0.88);
+  --black: rgba(16, 16, 25, 0.88);
+
+  /** Title ----**/
+  --font-heading-family: StackSansHeadline-Medium, "Stack Sans Headline";
+  --font-heading: var(--font-heading-family), var(--font-mono);
+  --font-heading-wght: 600;
+  --font-heading-features:
+    "wght" var(--font-heading-wght), "opsz" var(--font-size, 10.5pt);
+  --font-heading-variation: "dliga", "tnum";
+  --font-heading-lspace: calc(1ex * 0.025);
+  --font-heading-wspace: calc(1ch * 0.075);
+
+  /** Sans ----**/
+  --font-body-family:
+    StackSansText-Light, "Stack Sans Text", PublicSansRoman-Regular,
+    "Public Sans";
+  --font-body: var(--font-body-family), var(--font-sans);
+  --font-body-wght: 400;
+  --font-body-bold: 600;
+  --font-body-features: "dliga", "ss07", "ss08";
+  --font-body-variation:
+    "wght" var(--font-body-wght), "opsz" var(--font-size, 10.5pt);
+  --font-body-lspace: calc(1ex * 0.01);
+  --font-body-wspace: calc(1ch * 0.05);
+
+  /** Mono ----**/
+  --font-code-family:
+    MartianMono-StdLt, "Martian Mono", "Liga Paper Mono", LigaDMMono-Regular;
+  --font-code: var(--font-code-family), var(--font-mono);
+  --font-code-lheight: calc(1ex * 3);
+  --font-code-wght: 450;
+  --font-code-features: "ss02", "ss05", "dliga", "zero";
+  --font-code-variation:
+    "wght" var(--font-code-wght), "spacing" 0, "opsz" var(--font-size, 10.5pt);
+  --font-code-lspace: calc(1ex * -0.05);
+  --font-code-wspace: calc(1ch * -0.25);
+
+  -moz-font-feature-settings: "dlig";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-feature-settings: "dlig";
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: var(--font-size, 10.5pt);
+  font-feature-settings: "kern";
+  font-optical-sizing: var(--font-size, 10.5pt);
+  font-size-adjust: from-font;
+  font-size: var(--font-size, 10.5pt);
+  font-synthesis: style;
+  font-variant-ligatures: common-ligatures contextual discretionary-ligatures;
+  font-variant-numeric: tabular-nums;
+  font-variation-settings: "opsz" var(--font-size, 10.5pt);
+}
+
+body {
+  color: var(--white);
+  font-size: var(--font-size, 10.5pt);
+  line-height: var(--font-lheight, 1.4);
+  text-rendering: optimizeLegibility;
+  font-kerning: normal;
+  text-wrap: pretty;
+
+  --fill-1: color-mix(in srgb, currentColor 3.5%, transparent);
+  --fill-2: color-mix(in srgb, currentColor 6%, transparent);
+  --fill-3: color-mix(in srgb, currentColor 12%, transparent);
+  --separator: color-mix(in srgb, currentColor 13%, transparent);
+  --separator-strong: color-mix(in srgb, currentColor 22%, transparent);
+  /* Code blocks and the table of contents share the same box style. */
+  --block-fill: color-mix(in srgb, currentColor 4%, transparent);
+  --block-border: color-mix(in srgb, currentColor 8%, transparent);
+  --secondary-text: color-mix(in srgb, currentColor 80%, transparent);
+  --accent-color: DarkTurquoise;
+  --accent-fill: color-mix(in srgb, var(--accent-color) 6%, transparent);
+  --accent-line: color-mix(in srgb, var(--accent-color) 70%, transparent);
+  --mark-fill: rgba(255, 214, 10, 0.4);
+  --radius-small: 1.5pt;
+  --radius-medium: 6pt;
+  --radius-large: 9pt;
+
+  font-family: var(--font-body, inherit);
+  font-weight: var(--font-body-wght, inherit);
+  font-variation-settings: var(--font-body-variation, inherit);
+  font-feature-settings: var(--font-body-features, inherit);
+  letter-spacing: var(--font-body-lspace, unset);
+  word-spacing: var(--font-body-wspace, unset);
+}
+
+body.app-style-dark {
+  --fill-1: color-mix(in srgb, currentColor 4.5%, transparent);
+  --fill-2: color-mix(in srgb, currentColor 7.5%, transparent);
+  --fill-3: color-mix(in srgb, currentColor 11%, transparent);
+  --separator: color-mix(in srgb, currentColor 15%, transparent);
+  --separator-strong: color-mix(in srgb, currentColor 26%, transparent);
+  --block-fill: color-mix(in srgb, currentColor 5.5%, transparent);
+  --block-border: color-mix(in srgb, currentColor 9%, transparent);
+  --accent-fill: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  --mark-fill: rgba(255, 214, 10, 0.28);
+}
+
+/* Headings */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-variation-settings: var(--font-heading-variation);
+  font-feature-settings: var(--font-heading-features);
+  margin: 1.6em 0 0.6em;
+  font-weight: var(--font-heading-wght);
+  line-height: 1.25;
+  letter-spacing: var(--font-heading-lspace);
+  word-spacing: var(--font-heading-wspace);
+  text-wrap: balance;
+  scroll-margin-top: 16px;
+  color: var(--secondary-text);
+  border: none;
+  padding-bottom: 0;
+}
+
+h1 {
+  font-size: 1.9em;
+  line-height: 1.15;
+}
+
+h2 {
+  font-size: 1.45em;
+}
+
+h3 {
+  font-size: 1.2em;
+}
+
+h4 {
+  font-size: 1.05em;
+}
+
+h5 {
+  font-size: 1em;
+}
+
+h6 {
+  font-size: 0.8em;
+  text-transform: uppercase;
+  color: var(--secondary-text);
+}
+
+h1 + h2,
+h2 + h3,
+h3 + h4,
+h4 + h5,
+h5 + h6 {
+  margin-top: 0.8em;
+}
+
+body > :first-child,
+body > .toc:first-child + * {
+  margin-top: 0;
+}
+
+/* Body text */
+
+p {
+  margin: 0.85em 0;
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-color), transparent);
+  text-decoration-thickness: 1pt;
+  text-underline-offset: 0.175em;
+  transition: text-decoration-color 0.15s;
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+a:not([href]):not([tabindex]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+b,
+strong {
+  color: white;
+  font-weight: var(--font-body-bold);
+}
+
+del {
+  color: var(--secondary-text);
+}
+
+mark {
+  color: inherit;
+  background-color: var(--mark-fill);
+  padding: 0.05em 0.2em;
+  border-radius: var(--radius-small);
+}
+
+abbr[title] {
+  text-decoration: underline dotted;
+  text-underline-offset: 0.2em;
+  cursor: help;
+}
+
+small {
+  font-size: 85%;
+}
+
+sub,
+sup {
+  position: relative;
+  font-size: 75%;
+  line-height: 0;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+hr {
+  /* Keep borders and backgrounds from running under the table of contents at the side. */
+  display: flow-root;
+  height: 0;
+  margin: 2em 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--separator);
+}
+
+img {
+  vertical-align: middle;
+  border-style: none;
+}
+
+/* Lists */
+
+ol,
+ul {
+  margin: 0.85em 0;
+  padding-left: 1.25em;
+}
+
+li + li,
+li > ul,
+li > ol {
+  margin-top: 0.5em;
+}
+
+li > ul,
+li > ol {
+  margin-bottom: 0;
+}
+
+li > p {
+  margin: 0.5em 0;
+}
+
+li::marker {
+  color: var(--secondary-text);
+}
+
+ol > li::marker {
+  font-variant-numeric: tabular-nums;
+}
+
+ul > li::marker {
+  list-style: dot;
+}
+
+:is(dir, menu, ol, ul) ul {
+  list-style-type: disc;
+  color: var(--secondary-text);
+}
+
+.task-list-item input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  font: inherit;
+  /* WebKit gives disabled inputs a fixed gray. */
+  color: inherit;
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  width: 1em;
+  height: 1em;
+  margin-block: 0;
+  margin-inline: -1.5em 0.25em;
+  /* Center the box on the capital letters of the text. */
+  vertical-align: calc((1cap - 1em) / 2);
+  border: 1.5px solid var(--separator-strong);
+  border-radius: var(--radius-small);
+  background-color: var(--fill-1);
+}
+
+.task-list-item input[type="checkbox"]:checked {
+  border-color: var(--accent-line);
+  background-color: var(--accent-fill);
+}
+
+.task-list-item input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 0.65em;
+  height: 0.65em;
+  background-color: var(--accent-color);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.8' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3.2L13 4.8' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+dl {
+  margin: 0.85em 0;
+}
+
+dt {
+  margin-top: 0.8em;
+  font-weight: var(--font-body-bold);
+}
+
+dd {
+  margin: 0.2em 0 0 1.25em;
+}
+
+/* Block quotes */
+
+blockquote {
+  /* Keep borders and backgrounds from running under the table of contents at the side. */
+  display: flow-root;
+  margin: 1.2em 0;
+  padding: 0.5em 1em;
+  border-left: 3px solid var(--accent-line);
+  border-radius: 0 var(--radius-medium) var(--radius-medium) 0;
+  background-color: var(--accent-fill);
+  corner-shape: var(--corner-shape);
+}
+
+blockquote > :first-child {
+  margin-top: 0;
+}
+
+blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* Alerts */
+
+.markdown-alert {
+  margin: 1.2em 0;
+  padding: 0.85em 1em;
+  border-left-width: 3px;
+  corner-shape: var(--corner-shape);
+  border-radius: 0 var(--radius-medium) var(--radius-medium) 0;
+  background-color: color-mix(
+    in srgb,
+    var(--alert-color, currentColor) 6%,
+    transparent
+  );
+}
+
+body.app-style-dark .markdown-alert {
+  background-color: color-mix(
+    in srgb,
+    var(--alert-color, currentColor) 10%,
+    transparent
+  );
+}
+
+.markdown-alert > :not(:first-child) {
+  margin-top: 0.625em;
+}
+
+/* Code */
+
+pre,
+code,
+samp {
+  font-family: var(--font-code);
+  font-variation-settings: var(--font-code-variation);
+  font-feature-settings: var(--font-code-features);
+  font-weight: var(--font-code-wght);
+  letter-spacing: var(--font-code-lspace);
+  word-spacing: var(--font-code-wspace);
+}
+
+code {
+  font-size: 0.875rem;
+  padding: 0.12em 0.4em;
+  border-radius: var(--radius-small);
+  background-color: var(--fill-3);
+}
+
+a > code {
+  color: inherit;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.1em;
+  padding: 0.05em 0.4em;
+  font-size: 0.8em;
+  line-height: 1.5;
+  text-align: center;
+  border: 1px solid var(--separator-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-small);
+  background-color: var(--fill-1);
+}
+
+pre {
+  margin: 1em 0;
+  padding: 0.75rem;
+  overflow: auto;
+  font-size: 0.875em;
+  line-height: var(--font-code-lheight);
+  corner-shape: var(--corner-shape);
+  border-radius: var(--radius-large);
+  background-color: var(--block-fill);
+  box-shadow: inset 0 0 0 0.5pt var(--block-fill);
+  border: solid 1pt var(--block-border);
+  outline: solid 1pt var(--black);
+  outline-offset: -0.5pt;
+}
+
+.codehilite {
+  border-radius: var(--radius-large);
+}
+
+pre code {
+  padding: 0;
+  font-size: inherit;
+  line-height: inherit;
+  background: none;
+  border-radius: 0;
+}
+
+.codehilite .hll {
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+.codehilite .linenos {
+  display: inline-block;
+  min-width: 1.5ch;
+  margin-right: 1em;
+  text-align: right;
+  user-select: none;
+}
+
+/* Tables */
+
+table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin: 1.2em 0;
+  overflow: auto;
+  border-spacing: 0;
+  border-collapse: separate;
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+table th,
+table td {
+  padding: 0.5em 0.9em;
+  border-bottom: 1px solid var(--separator);
+}
+
+table th + th,
+table td + td {
+  border-left: 1px solid var(--fill-3);
+}
+
+table th {
+  font-weight: var(--font-body-bold);
+  background-color: var(--fill-2);
+}
+
+table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+table tbody tr:hover {
+  background-color: var(--fill-1);
+}
+
+/* Footnotes */
+
+.footnote {
+  margin-top: 2.5em;
+  font-size: 0.875em;
+  color: var(--secondary-text);
+}
+
+.footnote > hr {
+  margin: 0 0 1em;
+}
+
+.footnote p {
+  margin: 0.3em 0;
+}
+
+.footnote-ref {
+  text-decoration: none;
+}
+
+.footnote-backref {
+  text-decoration: none;
+}
+
+/* Disclosure */
+
+details {
+  margin: 0.85em 0;
+}
+
+summary {
+  font-weight: var(--font-body-bold);
+  cursor: default;
+}
+
+details[open] > summary {
+  margin-bottom: 0.5em;
+}
+
+/* Math and diagrams */
+
+mjx-container[display="true"] {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.mermaid {
+  margin: 1.2em 0;
+}
+
+/* Table of contents */
+
+.toc {
+  float: right;
+  max-width: min(45%, 280px);
+  min-width: 150px;
+  margin: 0 0 1em 1.5em;
+  padding: 0.7em 0.4em;
+  font-size: 0.9em;
+  line-height: 1.4;
+  border: 1px solid var(--block-border);
+  border-radius: var(--radius-large);
+  background-color: var(--block-fill);
+}
+
+@media (max-width: 350px) {
+  .toc {
+    float: none;
+    max-width: none;
+    margin: 1.5rem 0;
+  }
+
+  .toc:first-child {
+    margin: 0 0 1.5rem;
+  }
+}
+
+.toc ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toc li + li,
+.toc li > ul {
+  margin-top: 1px;
+}
+
+.toc a {
+  display: block;
+  padding: 0.25em 0.65em;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-small);
+}
+
+.toc a:hover,
+.toc a:focus {
+  color: var(--accent-color);
+  background-color: var(--fill-2);
+}
+
+.toc > ul > li > a {
+  font-weight: var(--font-body-bold);
+}
+
+.toc ul ul a {
+  padding-left: 1.5em;
+}
+
+.toc ul ul ul a {
+  padding-left: 2.4em;
+}
+
+.toc ul ul ul ul a {
+  padding-left: 3.3em;
+}
+
+.toc ul ul ul ul ul a {
+  padding-left: 4.2em;
+}
+
+.toc ul ul ul ul ul ul a {
+  padding-left: 5.1em;
+}
