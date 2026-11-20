@@ -4,12 +4,14 @@ typeset -gU path PATH
 typeset -gU fpath FPATH
 
 typeset -a candidate_paths=(
- "$HOME/.local/bin"
  "/Applications/Comet.app/Contents/MacOS"
  "$HOME/Applications/Comet.app/Contents/MacOS"
+ "$HOME/.local/bin"
  "$HOME/.bun/bin"
  "$HOME/.cargo/bin"
  "$HOME/.dotnet/tools"
+ "$HOME/.lmstudio/bin"
+ "$HOME/.opencode/bin"
 )
 
 local directory

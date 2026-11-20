@@ -1,0 +1,10 @@
+#autoload
+# Run the dotfiles test harness in a throwaway container on Colima.
+emulate -L zsh
+
+local script="${DOTFILES_REPO_ROOT:-$HOME/workspaces/dotfiles}/scripts/test-in-colima.zsh"
+[[ -r $script ]] || {
+  print -u2 -- "colima-test: $script not found (set DOTFILES_REPO_ROOT)"
+  return 1
+}
+zsh "$script" "$@"

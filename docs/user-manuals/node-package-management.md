@@ -47,7 +47,7 @@ Relevant files:
 - `.config/zsh/apps.d/23-pnpm-post-mise.zsh` restores pnpm shims after `mise` rewrites PATH.
 - `.config/zsh/core/25-mise.zsh` runs `mise activate zsh`.
 - `.config/zsh/functions/node-doctor` reports the active runtime and package-manager paths.
-- `scripts/sync-zsh-home.zsh` refreshes the installed home shell config from the repo.
+- `scripts/sync-home.zsh` refreshes the installed home config from the repo (use `--dry-run` first).
 
 Use a project runtime pin when a project needs a specific Node version:
 

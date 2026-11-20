@@ -17,6 +17,17 @@ typeset -g ZSH_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 
 mkdir -p "$ZSH_CACHE_HOME"
 
+# Remember which config folder this shell loaded. sync-home.zsh installs a
+# brand-new folder (new inode), so zsh-doctor can tell when this shell is
+# running an older copy of the config. mtimes can't: the sync preserves them.
+typeset -g ZSH_CONFIG_INODE=""
+if zmodload -F zsh/stat b:zstat 2>/dev/null; then
+  typeset -ga _zsh_config_stat=()
+  zstat -A _zsh_config_stat +inode -- "$ZSH_CONFIG_HOME" 2>/dev/null &&
+    ZSH_CONFIG_INODE=${_zsh_config_stat[1]}
+  unset _zsh_config_stat
+fi
+
 # Compile a source file when its adjacent bytecode file is missing or stale.
 #
 # Zsh automatically selects:
