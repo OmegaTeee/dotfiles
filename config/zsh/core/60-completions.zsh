@@ -19,6 +19,16 @@ unset _argcomplete_dirs
 [[ -d "$HOME/.zfunc" ]] &&
   fpath=("$HOME/.zfunc" $fpath)
 
+# User-installed completions in the XDG data dir. Installers that follow XDG
+# put completions here (zshellcheck's adds _zshellcheck). They also append an
+# fpath line to ~/.zshrc, which this setup never reads (ZDOTDIR is set), so
+# this module is what actually loads them.
+typeset -g _xdg_site_functions="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/site-functions"
+if [[ -d $_xdg_site_functions ]]; then
+  fpath=("$_xdg_site_functions" $fpath)
+fi
+unset _xdg_site_functions
+
 autoload -Uz compinit
 
 typeset -g ZSH_COMPDUMP="${ZSH_CACHE_HOME}/zcompdump-${ZSH_VERSION}"

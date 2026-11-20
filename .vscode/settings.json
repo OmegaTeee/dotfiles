@@ -1,4 +1,10 @@
 {
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    { "file": ".github/commit-message-instructions.md" }
+  ],
+  "github.copilot.chat.reviewSelection.instructions": [
+    { "file": ".github/review-instructions.md" }
+  ],
   // ── Explorer/Editor  ──────────────────────────────────
   "files.exclude": {
     "*.zwc": true,

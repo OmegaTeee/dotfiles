@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install zsh
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq zsh
+
+      # Same script as local runs: zsh -n on every zsh file, shellcheck on
+      # scripts/*.sh (shellcheck is preinstalled on ubuntu-latest).
+      - name: Lint
+        run: zsh scripts/lint.zsh
+
+      - name: Whitespace
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags --depth=1 origin "${{ github.base_ref }}"
+          git diff --check "origin/${{ github.base_ref }}" HEAD
+
+  test:
+    name: Test (sync + shell startup)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install zsh
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq zsh
+
+      # The Colima harness, pointed at the runner's own Docker instead of a
+      # Colima VM. It syncs into a throwaway container, starts a login shell,
+      # and checks every function and alias (scripts/check-commands.zsh).
+      - name: Run test harness
+        env:
+          COLIMA_TEST_CONTEXT: default
+        run: zsh scripts/test-in-colima.zsh
